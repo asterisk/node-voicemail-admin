@@ -1,0 +1,22 @@
+{
+  "ari": {
+    "url": "http://localhost:8088",
+    "username": "admin",
+    "password": "secret",
+    "applicationName": "voicemail-main"
+  },
+
+  "logging": {
+    "src": false,
+
+    "normal": {
+      "level": "info",
+      "path": "./logs/info.log"
+    },
+
+    "error": {
+      "level": "error",
+      "path": "./logs/error.log"
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "name": "node-voicemail-admin",
+  "version": "0.0.1",
+  "description": "Asterisk voicemail administration tool",
+  "main": "lib/voicemail-admin.js",
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/asterisk/node-voicemail-admin"
+  },
+  "author": "Jonathan R. Rose",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/asterisk/node-voicemail-admin/issues"
+  },
+  "homepage": "https://github.com/asterisk/node-voicemail-admin",
+  "dependencies": {
+    "moment": "^2.8.4",
+    "pg": "^4.1.1",
+    "prompt": "^0.2.14",
+    "q": "^1.1.2",
+    "sprintf": "^0.1.5",
+    "sql": "^0.42.0",
+    "sqlite3": "^3.0.4",
+    "voicemail-config": "git://github.com/asterisk/node-voicemail-config",
+    "voicemail-data": "git://github.com/asterisk/node-voicemail-data",
+    "voicemail-logging": "git://github.com/asterisk/node-voicemail-logging"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-mocha-istanbul": "^2.2.0",
+    "grunt-mocha-test": "^0.10.0",
+    "istanbul": "^0.3.2",
+    "mocha": "^1.21.4",
+    "mockery": "^1.4.0"
+  }
+}

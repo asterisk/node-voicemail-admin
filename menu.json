@@ -1,0 +1,147 @@
+{
+  "commands": [
+    {
+      "_comment": "Don't change the command value of help... it's special.",
+      "command": "help",
+      "action": "showHelp",
+      "usage": "help [command]",
+      "description": "Shows a list of commands or detailed info about a command."
+    },
+
+    {
+      "_comment": "Don't change the command value of exit... it's special.",
+      "command": "exit",
+      "action": "exit",
+      "usage": "exit",
+      "description": "Exits the administrator tool."
+    },
+
+    {
+      "command": "show contexts",
+      "action": "showContexts",
+      "usage": "show contexts",
+      "description": "Display a list of existing voicemail contexts."
+    },
+
+    {
+      "command": "show mailboxes",
+      "action": "showMailboxes",
+      "usage": "show mailboxes <domain>",
+      "description": "List voicmail mailboxes for the requested context."
+    },
+
+    {
+      "command": "show mailbox",
+      "action": "showMailbox",
+      "usage": "show mailbox <mailboxNumber>@<mailboxContext>",
+      "description": "Display information about the specific mailbox."
+    },
+
+    {
+      "command": "show folders",
+      "action": "showFolders",
+      "usage": "show folders",
+      "description": "Display a list of voicemail folders."
+    },
+
+    {
+      "command": "show folder",
+      "action": "showFolder",
+      "usage": "show folder <name>",
+      "description": "Display detailed info about a voicemail folder."
+    },
+
+    {
+      "command": "create context",
+      "action": "createContext",
+      "usage": "create context <domain>",
+      "description": "Creates a context with the given domain."
+    },
+
+    {
+      "command": "create mailbox",
+      "action": "createMailbox",
+      "usage": "create <box_number>@<box_context> <password> <name> <email>",
+      "description": "Creates the specified mailbox with the given password."
+    },
+
+    {
+      "command": "create folder",
+      "action": "createFolder",
+      "usage": "create folder <name> <dtmf> <recording>",
+      "description": "Creates a new voicemail folder with given parameters."
+    },
+
+    {
+      "command": "edit context",
+      "action": "editContext",
+      "usage": "edit context <current_domain> <new_domain>",
+      "description": "Modify the domain of an existing context."
+    },
+
+    {
+      "command": "edit mailbox",
+      "action": "editMailbox",
+      "usage": "edit mailbox <mailboxNumber>@<mailboxContext> <field> <value>",
+      "description": "Modify some value of the given mailbox.",
+      "details": [
+        "fields:",
+        "  mailboxName    - name associated with the mailbox",
+        "  password       - sequence of digits used as password",
+        "  name           - owner of the mailbox",
+        "  email          - email assocated with the mailbox"
+      ]
+    },
+
+    {
+      "command": "edit folder",
+      "action": "editFolder",
+      "usage": "edit folder <name> <field> <value>",
+      "description": "Modify some value of the named folder.",
+      "details": [
+        "fields:",
+        "  name      - name of the folder",
+        "  dtmf      - key used to switch to this folder in change folder menu",
+        "  recording - sound resource played to announce folder name"
+      ]
+    },
+
+    {
+      "command": "delete messages",
+      "action": "deleteMessages",
+      "usage": "delete messages <mailboxNumber>@<mailboxContext>",
+      "description": "Delete all messages associated with specified mailbox."
+    },
+
+    {
+      "command": "delete context",
+      "action": "deleteContext",
+      "usage": "delete context <domain>",
+      "description": "Delete the requested context",
+      "details": [
+        "note: The context must not be in use by any existing mailboxes."
+      ]
+    },
+
+    {
+      "command": "delete mailbox",
+      "action": "deleteMailbox",
+      "usage": "delete mailbox <mailboxNumber>@<mailboxContext>",
+      "description": "Delete the requested mailbox",
+      "details": [
+        "note: The mailbox must not contain any messages."
+      ]
+    },
+
+    {
+      "command": "delete folder",
+      "action": "deleteFolder",
+      "usage": "delete folder <name>",
+      "description": "Delete the requested folder",
+      "details": [
+        "note: No mailboxes may contain any messages in the requested ",
+        "      folder."
+      ]
+    }
+  ]
+}
