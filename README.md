@@ -1,4 +1,11 @@
-node-voicemail-admin
-====================
+# Asterisk Voicemail Administrator Application
 
-A command line administration tool for managing mailboxes in node-voicemail
+A command line administration tool for managing mailboxes in Asterisk voicemail
+
+# Installation
+
+# Usage
+
+```bash
+$ node app.js
+```
