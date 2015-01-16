@@ -61,7 +61,7 @@
     {
       "command": "create mailbox",
       "action": "createMailbox",
-      "usage": "create <box_number>@<box_context> <password> <name> <email>",
+      "usage": "create mailbox <box_number>@<box_context> <password> <name> <email>",
       "description": "Creates the specified mailbox with the given password."
     },
 
