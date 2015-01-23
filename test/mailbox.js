@@ -15,20 +15,87 @@
 
 var assert = require('assert');
 var dal = require('./mock_dal/db.js')();
+var sprintf = require('sprintf').sprintf;
 
 describe('mailbox', function() {
+  var infoMsgsExpected = [];
+  var jsonMsgsExpected = [];
+
+  function evaluateJSON(args)
+  {
+    if (args.length < 2 || args[0] !== '\%j') {
+      return;
+    }
+
+    var outputJSON = args[1];
+
+    jsonMsgsExpected = jsonMsgsExpected.filter(function (thisExpectedJSON) {
+      function keyCount(a) {
+        var size = 0;
+        for (var key in a) {
+          size++;
+        }
+
+        return size;
+      }
+
+      if (keyCount(thisExpectedJSON) !== keyCount(outputJSON)) {
+        /* Keep it in the array, key counts are different */
+        return true;
+      }
+
+      for (var key in thisExpectedJSON) {
+        if (thisExpectedJSON[key] !== outputJSON[key]) {
+          /* keep it, an element is different */
+          return true;
+        }
+      }
+
+      /* It's a match, remove it from the array. */
+      return false;
+    });
+  }
+
+  function evaluateInfo(args)
+  {
+    /*jshint validthis:true */
+    var output = sprintf.apply(this, args);
+
+    /* trim extra spaces used for formatting */
+    output = output.replace(/\s+/g,' ').trim();
+
+    var index = infoMsgsExpected.indexOf(output);
+    if (index > -1) {
+      infoMsgsExpected.splice(index, 1);
+    }
+  }
+
   var logger = {
     trace: function() {},
     debug: function() {},
-    info: function() {},
+    info: function() {
+      var args = Array.prototype.slice.call(arguments, 0);
+
+      if (jsonMsgsExpected.length > 0) {
+        evaluateJSON(args);
+      }
+
+      if (infoMsgsExpected.length > 0) {
+        evaluateInfo(args);
+      }
+    },
     warn: function() {},
     error: function() {},
     fatal: function() {}
   };
 
   var adminTool = require('../lib/voicemail-admin.js');
+  adminTool.testInitialize({logger: logger, dal: dal});
 
   beforeEach(function (done) {
+    adminTool.testInitialize({logger: logger, dal: dal});
+    jsonMsgsExpected = [];
+    infoMsgsExpected = [];
     done();
   });
 
@@ -65,6 +132,47 @@ describe('mailbox', function() {
       done();
     })
     .done();
+  });
+
+  it('should support \'show mailbox <box_number>@<box_context>\'',
+      function (done) {
+    var command = 'show mailbox 1000@domain.com';
+    jsonMsgsExpected.push({'mailboxNumber': '1000',
+                           'mailboxName': undefined,
+                           'password': '1111',
+                           'name': 'Test Mailbox',
+                           'email': 'test@digium.com',
+                           'read': undefined,
+                           'unread': undefined,
+                           'greetingBusy': undefined,
+                           'greetingAway': undefined,
+                           'greetingName': undefined});
+
+    adminTool.processOption({command: command})
+    .then(function () {
+      assert(jsonMsgsExpected.length === 0);
+      done();
+    })
+    .done();
+  });
+
+  it('should support \'show mailboxes <domain>\'',
+     function (done) {
+
+    var command = 'create mailbox 2000@domain.com 2222 "Test 2" ' +
+                  'test2@digium.com';
+    adminTool.processOption({command: command})
+    .then(function () {
+      infoMsgsExpected.push('1000@domain.com test@digium.com Test Mailbox');
+      infoMsgsExpected.push('2000@domain.com test2@digium.com Test 2');
+      return adminTool.processOption({command: 'show mailboxes domain.com'});
+    })
+    .then(function () {
+      assert(infoMsgsExpected.length === 0);
+      done();
+    })
+    .done();
+
   });
 
   it('should support \'edit mailbox <box_number>@<box_context> ' +

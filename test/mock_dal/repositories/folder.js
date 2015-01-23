@@ -173,7 +173,7 @@ function createApi() {
       if (newFolders !== undefined) {
         folders = newFolders;
       } else {
-        folders = {}
+        folders = {};
       }
 
       if (newNextId !== undefined) {
@@ -186,5 +186,5 @@ function createApi() {
 }
 
 module.exports = function(config, dependencies) {
-  return createApi()
+  return createApi();
 };

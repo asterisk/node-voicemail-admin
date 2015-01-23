@@ -76,7 +76,7 @@ function createApi() {
      * Return a context instance from the mock database.
      */
     get: function(domain) {
-      var self = this
+      var self = this;
 
       return Q.fcall(function () {
         for (var index in contexts) {
@@ -134,7 +134,7 @@ function createApi() {
       if (newContexts !== undefined) {
         contexts = newContexts;
       } else {
-        contexts = {}
+        contexts = {};
       }
 
       if (newNextId !== undefined) {
@@ -147,5 +147,5 @@ function createApi() {
 }
 
 module.exports = function(config, dependencies) {
-  return createApi()
+  return createApi();
 };

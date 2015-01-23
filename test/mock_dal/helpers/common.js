@@ -8,7 +8,7 @@
  * @author Samuel Fortier-Galarneau <sgalarneau@digium.com>
  */
 
-'use strict'
+'use strict';
 
 var Case = require('case');
 var util = require('util');

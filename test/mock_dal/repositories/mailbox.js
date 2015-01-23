@@ -191,8 +191,6 @@ function createApi() {
      *   message counts
      */
     newMessage: function(instance, mwi) {
-      dependencies.logger.trace('mailbox.newMessage called');
-
       return updateMwi(instance, mwi, modifier);
 
       function modifier (row) {
@@ -262,8 +260,6 @@ function createApi() {
      *   message counts
      */
     deletedMessage: function(instance, messageRead, mwi) {
-      dependencies.logger.trace('mailbox.deletedMessage called');
-
       return updateMwi(instance, mwi, modifier);
 
       function modifier (row) {
@@ -293,7 +289,7 @@ function createApi() {
       if (newMailboxes !== undefined) {
         mailboxes = newMailboxes;
       } else {
-        mailboxes = {}
+        mailboxes = {};
       }
 
       if (newNextId !== undefined) {
@@ -325,5 +321,5 @@ function createApi() {
 }
 
 module.exports = function(config, dependencies) {
-  return createApi()
+  return createApi();
 };

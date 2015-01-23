@@ -1,5 +1,5 @@
 /**
- *  Context specific unit tests.
+ *  Interface unit tests.
  *
  *  @module tests-context
  *  @copyright 2015, Digium Inc.
@@ -17,7 +17,7 @@ var assert = require('assert');
 var dal = require('./mock_dal/db.js')();
 var sprintf = require('sprintf').sprintf;
 
-describe('context', function () {
+describe('interface', function () {
   var infoMsgsExpected = [];
   var errorMsgsExpected = [];
   var jsonMsgsExpected = [];
@@ -116,96 +116,103 @@ describe('context', function () {
     jsonMsgsExpected = [];
     infoMsgsExpected = [];
     errorMsgsExpected = [];
-    dal.context.testReset();
     done();
   });
 
-  it('should support \'create context <domain>\'', function(done) {
-    adminTool.processOption({command: 'create context domain.com'})
-    .then(function () {
-      return dal.context.get('domain.com');
-    }).then(function (context) {
-      assert(context.domain === 'domain.com');
-      assert(context.getId() === 1);
+  it('should support \'exit\'', function (done) {
+    adminTool.processOption({command: 'exit'})
+    .then (function (result) {
+      assert(result === true);
       done();
     })
     .done();
   });
 
-  it('should fail when trying to create duplicates of the same domain.',
+  it('should exit on a commandless entry (usually caused by abort signal)',
       function (done) {
-    adminTool.processOption({command: 'create context domain.com'})
-    .then(function () {
-      errorMsgsExpected.push('Context with domain \'domain.com\' already ' +
-                             'exists.');
-      return adminTool.processOption({command: 'create context domain.com'});
-    })
-    .then(function () {
-      assert(errorMsgsExpected.length === 0);
+    adminTool.processOption()
+    .then (function (result) {
+      assert(result === true);
       done();
     })
     .done();
   });
 
-  it('should support \'edit context <current_domain> <new_domain>\'',
-      function (done) {
-    adminTool.processOption({command: 'create context domain.com'})
-    .then(function () {
-      return dal.context.get('domain.com');
-    }).then(function (context) {
-      assert(context.domain === 'domain.com');
-      assert(context.getId() === 1);
-      return adminTool.processOption(
-        {command: 'edit context domain.com test.com'});
-    }).then(function () {
-      return dal.context.get('test.com');
-    }).then(function (context) {
-      assert(context.domain === 'test.com');
-      assert(context.getId() === 1);
-      done();
-    })
-    .done();
-  });
+  it('should support \'help\'', function (done) {
+    infoMsgsExpected.push('help'.green + ' - Shows a list of commands or ' +
+                          'detailed info about a command.');
+    infoMsgsExpected.push('exit'.green + ' - Exits the administrator tool.');
+    /* We could add more, but that's just more crap to maintain if the
+     * the descriptions change. */
 
-  it('should support \'show contexts\'',
-      function (done) {
-
-    infoMsgsExpected.push('domain.com');
-    infoMsgsExpected.push('test.net');
-
-    /* Add the contexts first. */
-    adminTool.processOption({command: 'create context domain.com'})
-    .then(function () {
-      return adminTool.processOption({command: 'create context test.net'});
-    })
-    .then(function () {
-      return adminTool.processOption({command: 'show contexts'});
-    })
-    .then(function () {
-      /* It should be cleared out by the specialized logger function */
+    adminTool.processOption({command: 'help'})
+    .then (function () {
       assert(infoMsgsExpected.length === 0);
       done();
     })
     .done();
   });
 
-  it('should support \'delete context <domain>\'', function (done) {
-    adminTool.processOption({command: 'create context domain.com'})
+  it('should support \'help help\'', function (done) {
+    infoMsgsExpected.push('Usage: ' + 'help [command]'.green);
+    infoMsgsExpected.push('Shows a list of commands or detailed info about ' +
+                          'a command.');
+    adminTool.processOption({command: 'help help'})
     .then(function () {
-      return dal.context.get('domain.com');
-    }).then(function (context) {
-      /* Make sure the entry was added in the first place */
-      assert(context.domain === 'domain.com');
-      assert(context.getId() === 1);
-      return adminTool.processOption(
-        {command: 'delete context domain.com'});
-    }).then(function () {
-      return dal.context.get('domain.com');
-    }).then(function (result) {
-      /* Make sure the entry has been deleted */
-      assert(result === null);
+      assert(infoMsgsExpected.length === 0);
       done();
     })
     .done();
   });
+
+  it('should support \'help <command>\'', function (done) {
+    infoMsgsExpected.push('Usage: ' +
+                          ('edit mailbox <mailboxNumber>@<mailboxContext> ' +
+                           '<field> <value>').green);
+    infoMsgsExpected.push('Modify some value of the given mailbox.');
+    infoMsgsExpected.push('fields:');
+    infoMsgsExpected.push('mailboxName - name associated with the mailbox');
+    infoMsgsExpected.push('password - sequence of digits used as password');
+    infoMsgsExpected.push('name - owner of the mailbox');
+    infoMsgsExpected.push('email - email associated with the mailbox');
+    adminTool.processOption({command: 'help edit mailbox'})
+    .then (function () {
+      assert(infoMsgsExpected.length === 0);
+      done();
+    })
+    .done();
+  });
+
+  it('should fail gracefully when a the command does not exist',
+      function (done) {
+    errorMsgsExpected.push('Unknown command \'fake_command\'');
+    adminTool.processOption({command: 'fake_command'})
+    .then (function () {
+      assert(errorMsgsExpected.length === 0);
+      done();
+    })
+    .done();
+  });
+
+  it('should fail gracefully when a command indicates syntax is wrong',
+      function (done) {
+    errorMsgsExpected.push('Invalid Syntax for \'create folder\'');
+    adminTool.processOption({command: 'create folder not_enough_parameters'})
+    .then (function () {
+      assert(errorMsgsExpected.length === 0);
+      done();
+    })
+    .done();
+  });
+
+  it('should be tolerant to empty commands',
+      function (done) {
+    adminTool.processOption({command: ''})
+    .then (function () {
+      done();
+    })
+    .done();
+  });
+
 });
+

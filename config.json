@@ -11,12 +11,14 @@
 
     "normal": {
       "level": "info",
-      "path": "./logs/info.log"
+      "path": "./logs/info.log",
+      "stdout": false
     },
 
     "error": {
       "level": "error",
-      "path": "./logs/error.log"
+      "path": "./logs/error.log",
+      "stderr": false
     }
   }
 }

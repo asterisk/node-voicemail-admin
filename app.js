@@ -15,34 +15,38 @@ var logger = require('voicemail-logging').create(
 
 var errorFunc = logger.error;
 
-/* Increase level of streams that write to standard out for info/error
- * loggers so that these streams are ignored. Bit of a hack. */
-for (var index in logger.streams) {
-  if (logger.streams[index].type === 'stream') {
-    logger.streams[index].level = 999;
-  }
-}
-
 /* Write error messages to the console as well as to the logger */
 logger.error = function () {
   var args = Array.prototype.slice.call(arguments, 0);
-  console.log.apply(this, args);
+  console.error.apply(this, args);
   errorFunc.apply(this, args);
-}
+};
+
+/* Don't write info messages to the logger. Override it to just do console
+ * output. */
+logger.info = function () {
+  var args = Array.prototype.slice.call(arguments, 0);
+  console.log.apply(this, args);
+};
 
 var initializer = require('./lib/voicemail-admin-init.js');
 
-initializer.onStart(logger)
-.then(function (result) {
-  if (result === -1) {
-    return;
+initializer.getDBConfig(logger)
+.then(function (db) {
+  if (!db) {
+    return initializer.createDBConfig(logger);
   }
 
+  return db.db;
+})
+.then(function (db) {
   var app = require ('./lib/voicemail-admin.js');
-  var db = require('./database.json').db;
   var dal = require('voicemail-data')(db, {
     logger: logger
   });
 
   return app.create({logger: logger, dal: dal});
+})
+.catch(function (err) {
+  logger.error(err);
 });

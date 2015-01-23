@@ -12,9 +12,6 @@
 
 module.exports = function(grunt) {
 
-  // threshold for failing coverage
-  var coverageThreshold = 80;
-
   // Project configuration.
   grunt.initConfig({
     // Task configuration.
@@ -25,7 +22,11 @@ module.exports = function(grunt) {
       all: [
         'Gruntfile.js',
         'lib/*.js',
-        'test/*.js'
+        'test/*.js',
+        'app.js',
+        'test/mock_dal/*.js',
+        'test/mock_dal/helpers/*.js',
+        'test/mock_dal/repositories/*.js'
       ]
     },
     mochaTest: {
@@ -41,13 +42,13 @@ module.exports = function(grunt) {
 
     'mocha_istanbul': {
       coverage: {
-        src: 'test',
+        src: ['test/*.js'],
         options: {
           check: {
-            lines: coverageThreshold,
-            statements: coverageThreshold,
-            branches: coverageThreshold,
-            functions: coverageThreshold
+            lines: 80,
+            statements: 80,
+            functions: 80,
+            branches: 50
           }
         }
       }

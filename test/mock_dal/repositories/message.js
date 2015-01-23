@@ -144,7 +144,8 @@ function createApi() {
     },
 
     /**
-     * Returns a Messages object containing all messages for the given mailbox and folder
+     * Returns a Messages object containing all messages for the given mailbox
+     * and folder
      */
     all: function(mailbox, folder) {
       var self = this;
@@ -341,7 +342,7 @@ function createApi() {
               callerId: message.callerId,
               duration: message.duration,
               recording: message.recording
-            }
+            };
             var copy = self.create(messages[index].getMailbox(),
                                    messages[index].getFolder(),
                                    fields,
@@ -363,7 +364,7 @@ function createApi() {
       if (newMessages !== undefined) {
         messages = newMessages;
       } else {
-        messages = {}
+        messages = {};
       }
 
       if (newNextId !== undefined) {
@@ -375,5 +376,5 @@ function createApi() {
 }
 
 module.exports = function(config, dependencies) {
-  return createApi()
+  return createApi();
 };
