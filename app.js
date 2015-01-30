@@ -14,6 +14,7 @@ var logger = require('voicemail-logging').create(
   'voicemail-admin');
 
 var errorFunc = logger.error;
+var infoFunc = logger.info;
 
 /* Write error messages to the console as well as to the logger */
 logger.error = function () {
@@ -22,11 +23,11 @@ logger.error = function () {
   errorFunc.apply(this, args);
 };
 
-/* Don't write info messages to the logger. Override it to just do console
- * output. */
+/* Write info messages to the console as well as to the logger */
 logger.info = function () {
   var args = Array.prototype.slice.call(arguments, 0);
   console.log.apply(this, args);
+  infoFunc.apply(this, args);
 };
 
 var initializer = require('./lib/voicemail-admin-init.js');
@@ -49,4 +50,5 @@ initializer.getDBConfig(logger)
 })
 .catch(function (err) {
   logger.error(err);
+  process.exit(1);
 });
