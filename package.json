@@ -1,6 +1,6 @@
 {
   "name": "node-voicemail-admin",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Asterisk voicemail administration tool",
   "private": true,
   "main": "lib/voicemail-admin.js",
