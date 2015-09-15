@@ -25,6 +25,7 @@ module.exports = function(grunt) {
         'lib/commands/*.js',
         'test/*.js',
         'app.js',
+        'createtables.js',
         'test/mock_dal/*.js',
         'test/mock_dal/helpers/*.js',
         'test/mock_dal/repositories/*.js'
