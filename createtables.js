@@ -17,25 +17,25 @@ var errorFunc = logger.error;
 var infoFunc = logger.info;
 
 /**
- * Iterates along create_table_fns and performs each create table
+ * Iterates along createTableFunctions and performs each create table
  * fn until all are finished.
  *
- * @param create_table_fns Array containing at least one name/create table
+ * @param createTableFunctions Array containing at least one name/create table
  *        function pair
  *
  * @returns last create table promise result, probably less than useful data.
  */
-function create_tables_promise(create_table_fns, index) {
-  var create_fn = create_table_fns[index]
+function createTablesPromise(createTableFunctions, index) {
+  var createFN = createTableFunctions[index];
 
-  if (create_fn) {
-    console.log('Creating table for \'%s\'', create_fn[0])
-    return create_fn[1]()
+  if (createFN) {
+    console.log('Creating table for \'%s\'', createFN[0]);
+    return createFN[1]()
     .then(function (res) {
-      if (create_table_fns.length > index + 1) {
-        return create_tables_promise(create_table_fns, index + 1)
+      if (createTableFunctions.length > index + 1) {
+        return createTablesPromise(createTableFunctions, index + 1);
       } else {
-        return res
+        return res;
       }
     });
   }
@@ -49,25 +49,25 @@ function create_tables_promise(create_table_fns, index) {
  *
  * @returns a promise that all the tables from the dal are created
  */
-function create_tables(dal) {
-  var create_table_fns = []
+function createTables(dal) {
+  var createTableFunctions = [];
 
   /* Note that order does matter since some tables have dependencies on
    * earlier tables */
   for (var key in dal) {
     if (dal[key].createTable) {
-      create_table_fns.push([key, dal[key].createTable])
+      createTableFunctions.push([key, dal[key].createTable]);
     }
   }
 
-  if (create_table_fns.length) {
-    return create_tables_promise(create_table_fns, 0)
+  if (createTableFunctions.length) {
+    return createTablesPromise(createTableFunctions, 0)
     .then(function (res) {
-      return res
-    })
+      return res;
+    });
   }
 
-  throw new Error('No table creation functions in data access layer')
+  throw new Error('No table creation functions in data access layer');
 }
 
 /* Write error messages to the console as well as to the logger */
@@ -89,21 +89,21 @@ var initializer = require('./lib/voicemail-admin-init.js');
 initializer.getDBConfig(logger)
 .then(function (db) {
   if (!db) {
-    throw new Error(sprintf('No database could be initialized'))
+    throw new Error('No database could be initialized');
   }
 
-  return db.db
+  return db.db;
 })
 .then(function (db) {
   var dal = require('voicemail-data')(db, {
     logger: logger
   });
 
-  return create_tables(dal)
+  return createTables(dal);
 })
-.then(function (create_tables_res) {
-  console.log('createtables script completed')
+.then(function (createTablesResult) {
+  console.log('createtables script completed');
 })
 .catch(function (error) {
-  console.error(error)
+  console.error(error);
 });
